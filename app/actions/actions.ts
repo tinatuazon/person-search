@@ -23,7 +23,8 @@ export async function searchUsers(query: string): Promise<User[]> {
     const results = await prisma.user.findMany({
         where: {
             name: {
-                startsWith: query
+                startsWith: query,
+                mode: 'insensitive'
             }
         },
         orderBy: { name: 'asc' }
