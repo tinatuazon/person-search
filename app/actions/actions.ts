@@ -55,7 +55,7 @@ export async function deleteUser(id: string): Promise<void> {
         })
         console.log(`User with id ${id} has been deleted.`)
         revalidatePath('/') // Revalidate the page
-    } catch (error) {
+    } catch {
         throw new Error(`User with id ${id} not found`)
     }
 }
