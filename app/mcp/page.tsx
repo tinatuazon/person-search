@@ -16,10 +16,8 @@ import { MCP_TOOLS } from '@/lib/mcp-server'
 export default function MCPTestPage() {
   const [response, setResponse] = useState<string>('')
   const [loading, setLoading] = useState(false)
-  const [selectedTool, setSelectedTool] = useState('')
-  const [args, setArgs] = useState<Record<string, string>>({})
 
-  const handleToolCall = async (toolName: string, toolArgs: Record<string, any>) => {
+  const handleToolCall = async (toolName: string, toolArgs: Record<string, unknown>) => {
     setLoading(true)
     try {
       const mcpRequest = {
@@ -49,7 +47,7 @@ export default function MCPTestPage() {
     }
   }
 
-  const handleQuickAction = async (action: string, params: Record<string, any> = {}) => {
+  const handleQuickAction = async (action: string, params: Record<string, unknown> = {}) => {
     await handleToolCall(action, params)
   }
 
@@ -105,7 +103,7 @@ export default function MCPTestPage() {
                   disabled={loading}
                   variant="outline"
                 >
-                  Search "John"
+                  Search &ldquo;John&rdquo;
                 </Button>
                 <Button 
                   onClick={() => handleQuickAction('add_user', {
@@ -272,17 +270,17 @@ export default function MCPTestPage() {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-2">🔍 Search Users</h4>
                   <p className="text-sm text-muted-foreground mb-2">
-                    "Can you search for users with the name 'John'?"
+                    &ldquo;Can you search for users with the name &lsquo;John&rsquo;?&rdquo;
                   </p>
                   <div className="bg-muted p-3 rounded text-sm">
-                    <strong>Claude will call:</strong> search_users with query "John"
+                    <strong>Claude will call:</strong> search_users with query &ldquo;John&rdquo;
                   </div>
                 </div>
 
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-2">➕ Add New User</h4>
                   <p className="text-sm text-muted-foreground mb-2">
-                    "Please add a new user named 'Sarah Wilson' with email 'sarah@example.com' and phone '0422987654'"
+                    &ldquo;Please add a new user named &lsquo;Sarah Wilson&rsquo; with email &lsquo;sarah@example.com&rsquo; and phone &lsquo;0422987654&rsquo;&rdquo;
                   </p>
                   <div className="bg-muted p-3 rounded text-sm">
                     <strong>Claude will call:</strong> add_user with the provided details
@@ -292,7 +290,7 @@ export default function MCPTestPage() {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-2">✏️ Update User</h4>
                   <p className="text-sm text-muted-foreground mb-2">
-                    "Update user ID 'abc123' with new email 'newemail@example.com'"
+                    &ldquo;Update user ID &lsquo;abc123&rsquo; with new email &lsquo;newemail@example.com&rsquo;&rdquo;
                   </p>
                   <div className="bg-muted p-3 rounded text-sm">
                     <strong>Claude will call:</strong> update_user with ID and new email
@@ -302,7 +300,7 @@ export default function MCPTestPage() {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-2">🗑️ Delete User</h4>
                   <p className="text-sm text-muted-foreground mb-2">
-                    "Delete the user with ID 'xyz789'"
+                    &ldquo;Delete the user with ID &lsquo;xyz789&rsquo;&rdquo;
                   </p>
                   <div className="bg-muted p-3 rounded text-sm">
                     <strong>Claude will call:</strong> delete_user with the specified ID
@@ -312,7 +310,7 @@ export default function MCPTestPage() {
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium mb-2">👤 Get User by ID</h4>
                   <p className="text-sm text-muted-foreground mb-2">
-                    "Show me the details for user ID 'def456'"
+                    &ldquo;Show me the details for user ID &lsquo;def456&rsquo;&rdquo;
                   </p>
                   <div className="bg-muted p-3 rounded text-sm">
                     <strong>Claude will call:</strong> get_user_by_id with the specified ID

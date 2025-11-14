@@ -1,24 +1,16 @@
 // app/api/mcp/route.ts
 
 import { NextRequest, NextResponse } from 'next/server'
-import { handleMCPTool, type MCPToolName } from '@/app/actions/mcp-actions'
+import { handleMCPTool } from '@/app/actions/mcp-actions'
 import { MCP_TOOLS } from '@/lib/mcp-server'
 
 interface MCPRequest {
   jsonrpc: string
   id: number | string
   method: string
-  params?: any
-}
-
-interface MCPResponse {
-  jsonrpc: string
-  id: number | string
-  result?: any
-  error?: {
-    code: number
-    message: string
-    data?: any
+  params?: {
+    name?: string
+    arguments?: Record<string, unknown>
   }
 }
 
@@ -54,6 +46,17 @@ export async function POST(request: NextRequest) {
         })
 
       case 'tools/call': {
+        if (!body.params) {
+          return NextResponse.json({
+            jsonrpc: '2.0',
+            id: body.id,
+            error: {
+              code: -32602,
+              message: 'Missing parameters'
+            }
+          })
+        }
+        
         const { name, arguments: args } = body.params
         
         if (!name || typeof name !== 'string') {
@@ -68,8 +71,8 @@ export async function POST(request: NextRequest) {
         }
 
         // Validate tool name
-        const validTools: MCPToolName[] = ['search_users', 'add_user', 'update_user', 'delete_user', 'get_user_by_id']
-        if (!validTools.includes(name as MCPToolName)) {
+        const validTools = ['search_users', 'add_user', 'update_user', 'delete_user', 'get_user_by_id'] as const
+        if (!validTools.includes(name as typeof validTools[number])) {
           return NextResponse.json({
             jsonrpc: '2.0',
             id: body.id,
@@ -81,7 +84,7 @@ export async function POST(request: NextRequest) {
         }
 
         try {
-          const result = await handleMCPTool(name as MCPToolName, args)
+          const result = await handleMCPTool(name as typeof validTools[number], args)
           return NextResponse.json({
             jsonrpc: '2.0',
             id: body.id,

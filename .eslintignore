@@ -1,0 +1,32 @@
+# Build artifacts
+.next/
+out/
+dist/
+
+# Generated files
+*.d.ts
+!*.d.ts.map
+
+# Node modules
+node_modules/
+
+# Prisma generated
+node_modules/@prisma/
+
+# Environment files
+.env*
+
+# Logs
+*.log
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp

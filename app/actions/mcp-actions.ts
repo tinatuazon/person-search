@@ -49,7 +49,7 @@ export async function handleMCPTool(toolName: MCPToolName, args: unknown): Promi
         
         // Filter out undefined values
         const filteredUpdateData = Object.fromEntries(
-          Object.entries(updateData).filter(([_, value]) => value !== undefined)
+          Object.entries(updateData).filter(([, value]) => value !== undefined)
         )
         
         if (Object.keys(filteredUpdateData).length === 0) {
