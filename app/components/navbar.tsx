@@ -2,15 +2,26 @@
 'use client'
 
 import Link from 'next/link';
-import { Search, Moon, Sun, User } from 'lucide-react';
+import { Search, Moon, Sun, User, LogOut, Settings } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
-import LogoutButton from "@/components/logout-button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated, user, isLoading, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <nav className="bg-background shadow-md">
@@ -23,47 +34,68 @@ export default function Navbar() {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <Link href="/" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
-              Home
-            </Link>
-            <Link href="/about" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
-              About
-            </Link>
-            <Link href="/mcp" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
-              MCP Server
-            </Link>
-            
+            {/* Add border and rounded corners to each header section */}
+              <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+                <Link href="/" className="w-full text-center text-foreground px-3 py-2 rounded-md text-sm font-medium">
+                  Home
+                </Link>
+              </div>
+            <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+              <Link href="/about" className="w-full text-center text-foreground px-3 py-2 rounded-md text-sm font-medium">
+                About
+              </Link>
+            </div>
+            <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+              <Link href="/mcp" className="w-full text-center text-foreground px-3 py-2 rounded-md text-sm font-medium">
+                MCP Server
+              </Link>
+            </div>
             {/* Authentication Section */}
             {!isLoading && (
               <>
                 {isAuthenticated && user ? (
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2 text-sm text-foreground">
-                      <User className="h-4 w-4" />
-                      <span className="hidden sm:inline">{user.name || user.email}</span>
-                    </div>
-                    <LogoutButton variant="ghost" size="sm" />
-                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+                        <Button variant="ghost" className="w-full flex items-center justify-center space-x-2 text-sm">
+                          <User className="h-4 w-4" />
+                          <span className="sm:inline text-center">{user.name || user.email}</span>
+                        </Button>
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end">
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>Sign out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 ) : (
-                  <Link 
-                    href="/auth/login" 
-                    className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    Sign In
-                  </Link>
+                  <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+                    <Link 
+                      href="/auth/login" 
+                      className="w-full text-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      Sign In
+                    </Link>
+                  </div>
                 )}
               </>
             )}
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              aria-label="Toggle theme"
-            >
-              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            </Button>
+            <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[44px] hover:bg-muted transition-colors">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="w-full flex items-center justify-center"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                aria-label="Toggle theme"
+              >
+                <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
