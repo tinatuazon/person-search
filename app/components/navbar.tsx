@@ -73,7 +73,7 @@ export default function Navbar() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 ) : (
-                  <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+                    <div className="flex items-center justify-center px-1 py-1 h-9 min-w-[90px]">
                     <Link 
                       href="/auth/login" 
                       className="w-full text-center bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
