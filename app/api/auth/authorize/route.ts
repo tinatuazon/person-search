@@ -11,11 +11,29 @@ import type { OAuth21AuthParams } from "@/lib/auth-types";
 
 /**
  * OAuth 2.1 Authorization Endpoint
+ * 
+ * ⚠️  IMPORTANT: This endpoint is designed for MCP (Model Context Protocol) client authentication,
+ * not for regular user authentication via the web interface.
+ * 
+ * For regular users:
+ * - Web users should authenticate directly with Google OAuth
+ * - The login page redirects directly to Google, not this endpoint
+ * 
+ * For MCP clients:
+ * - MCP tools (like GitHub Copilot, Claude Desktop) use this endpoint
+ * - This acts as an OAuth 2.1 proxy to Google OAuth for API access
+ * 
  * Handles authorization requests and redirects to Google OAuth
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   try {
     const { searchParams } = new URL(request.url);
+    
+    console.log("🔐 OAuth Authorization Request received:", {
+      userAgent: request.headers.get('user-agent')?.substring(0, 50),
+      origin: request.headers.get('origin'),
+      referer: request.headers.get('referer'),
+    });
     
     // Extract OAuth 2.1 parameters
     const authParams: OAuth21AuthParams = {

@@ -104,8 +104,8 @@ function LoginButton() {
       returnUrl: currentReturnUrl
     }));
 
-    // OAuth 2.1 authorization parameters  
-    const params = new URLSearchParams({
+    // Direct Google OAuth URL (skip our own authorize endpoint)
+    const googleAuthParams = new URLSearchParams({
       response_type: 'code',
       client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
       redirect_uri: window.location.origin + '/api/auth/callback/google',
@@ -115,8 +115,8 @@ function LoginButton() {
       prompt: 'consent',
     });
 
-    // Redirect to OAuth authorization endpoint
-    window.location.href = `/api/auth/authorize?${params.toString()}`;
+    // Redirect directly to Google OAuth
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${googleAuthParams.toString()}`;
   };
 
   return (
