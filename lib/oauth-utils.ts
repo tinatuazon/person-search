@@ -244,14 +244,24 @@ export async function exchangeCodeForGoogleTokens(
   clientSecret?: string,
 ): Promise<{ success: boolean; tokens?: GoogleTokens; error?: string }> {
   try {
+    const effectiveClientId = clientId || process.env.GOOGLE_CLIENT_ID;
+    const effectiveClientSecret = clientSecret || process.env.GOOGLE_CLIENT_SECRET;
+    
+    if (!effectiveClientId || !effectiveClientSecret) {
+      return {
+        success: false,
+        error: "Missing Google OAuth credentials (GOOGLE_CLIENT_ID or GOOGLE_CLIENT_SECRET)",
+      };
+    }
+
     const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        client_id: clientId || process.env.GOOGLE_CLIENT_ID || "",
-        client_secret: clientSecret || process.env.GOOGLE_CLIENT_SECRET || "",
+        client_id: effectiveClientId,
+        client_secret: effectiveClientSecret,
         code: code,
         grant_type: "authorization_code",
         redirect_uri: redirectUri,

@@ -41,7 +41,18 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
     const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
     
+    console.log("🔧 Environment Check:", {
+      hasGoogleClientId: !!googleClientId,
+      hasGoogleClientSecret: !!googleClientSecret,
+      clientIdPreview: googleClientId?.substring(0, 10) + "...",
+      nodeEnv: process.env.NODE_ENV
+    });
+    
     if (!googleClientId || !googleClientSecret) {
+      console.error("❌ Missing OAuth credentials:", {
+        googleClientId: !!googleClientId,
+        googleClientSecret: !!googleClientSecret
+      });
       OAuthLogger.error("google-callback", "Missing Google OAuth credentials");
       return NextResponse.redirect(
         new URL("/auth/error?error=server_error&description=OAuth not configured", request.url)
@@ -50,6 +61,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Exchange code for tokens
     const redirectUri = getRedirectUris().google;
+    
+    console.log("🔄 Token Exchange Request:", {
+      redirectUri,
+      hasClientId: !!googleClientId,
+      hasClientSecret: !!googleClientSecret,
+      codeLength: code.length
+    });
+    
     const { success, tokens, error: exchangeError } = await exchangeCodeForGoogleTokens(
       code,
       redirectUri,
