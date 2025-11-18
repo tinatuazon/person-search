@@ -8,8 +8,7 @@ import {
   addUserSchema, 
   updateUserSchema, 
   deleteUserSchema, 
-  getUserByIdSchema,
-  type MCPToolName 
+  getUserByIdSchema
 } from '@/lib/mcp-server'
 import { 
   searchUsers, 
@@ -20,27 +19,55 @@ import {
 } from './actions'
 import { User } from './schemas'
 
-// MCP Tool Handler
-export async function handleMCPTool(toolName: MCPToolName, args: unknown): Promise<string> {
+// MCP Tool Handler with OAuth user context
+export async function handleMCPTool(toolName: string, args: Record<string, unknown>, user?: { clientId: string; extra?: { email?: string; name?: string } }): Promise<string> {
   try {
+    console.log('🔧 MCP Tool Execution:', {
+      tool: toolName,
+      user: user ? `${user.extra?.name} (${user.extra?.email})` : 'anonymous',
+      hasArgs: !!args
+    });
+
     switch (toolName) {
       case "search_users": {
         const { query } = searchUsersSchema.parse(args)
         const users = await searchUsers(query)
+        
+        console.log('🔍 Search executed:', {
+          query,
+          resultCount: users.length,
+          user: user?.extra?.email
+        });
+        
         return JSON.stringify({
           success: true,
           data: users,
-          message: `Found ${users.length} user(s)`
+          message: `Found ${users.length} user(s)`,
+          requestedBy: user?.extra ? {
+            name: user.extra.name,
+            email: user.extra.email
+          } : null
         }, null, 2)
       }
 
       case "add_user": {
         const userData = addUserSchema.parse(args)
         const newUser = await addUser(userData)
+        
+        console.log('➕ User created:', {
+          newUserId: newUser.id,
+          newUserName: newUser.name,
+          createdBy: user?.extra?.email
+        });
+        
         return JSON.stringify({
           success: true,
           data: newUser,
-          message: `Successfully created user: ${newUser.name}`
+          message: `Successfully created user: ${newUser.name}`,
+          createdBy: user?.extra ? {
+            name: user.extra.name,
+            email: user.extra.email
+          } : null
         }, null, 2)
       }
 
@@ -60,48 +87,85 @@ export async function handleMCPTool(toolName: MCPToolName, args: unknown): Promi
         }
         
         const updatedUser = await updateUser(id, filteredUpdateData)
+        
+        console.log('✏️ User updated:', {
+          userId: id,
+          updatedFields: Object.keys(filteredUpdateData),
+          updatedBy: user?.extra?.email
+        });
+        
         return JSON.stringify({
           success: true,
           data: updatedUser,
-          message: `Successfully updated user: ${updatedUser.name}`
+          message: `Successfully updated user: ${updatedUser.name}`,
+          updatedBy: user?.extra ? {
+            name: user.extra.name,
+            email: user.extra.email
+          } : null
         }, null, 2)
       }
 
       case "delete_user": {
         const { id } = deleteUserSchema.parse(args)
         await deleteUser(id)
+        
+        console.log('🗑️ User deleted:', {
+          userId: id,
+          deletedBy: user?.extra?.email
+        });
+        
         return JSON.stringify({
           success: true,
-          message: `Successfully deleted user with ID: ${id}`
+          message: `Successfully deleted user with ID: ${id}`,
+          deletedBy: user?.extra ? {
+            name: user.extra.name,
+            email: user.extra.email
+          } : null
         }, null, 2)
       }
 
       case "get_user_by_id": {
         const { id } = getUserByIdSchema.parse(args)
-        const user = await getUserById(id)
+        const foundUser = await getUserById(id)
         
-        if (!user) {
+        if (!foundUser) {
+          console.log('❌ User not found:', {
+            userId: id,
+            requestedBy: user?.extra?.email
+          });
+          
           return JSON.stringify({
             success: false,
             message: `User with ID ${id} not found`
           }, null, 2)
         }
         
+        console.log('👤 User retrieved:', {
+          userId: id,
+          userName: foundUser.name,
+          requestedBy: user?.extra?.email
+        });
+        
         return JSON.stringify({
           success: true,
-          data: user,
-          message: `Retrieved user: ${user.name}`
+          data: foundUser,
+          message: `Retrieved user: ${foundUser.name}`,
+          requestedBy: user?.extra ? {
+            name: user.extra.name,
+            email: user.extra.email
+          } : null
         }, null, 2)
       }
 
       default:
+        console.error('❌ Unknown MCP tool:', toolName);
         return JSON.stringify({
           success: false,
           message: `Unknown tool: ${toolName}`
         }, null, 2)
     }
   } catch (error) {
-    console.error(`MCP Tool Error [${toolName}]:`, error)
+    console.error(`❌ MCP Tool Error [${toolName}]:`, error)
     
     if (error instanceof z.ZodError) {
       return JSON.stringify({

@@ -2,12 +2,15 @@
 'use client'
 
 import Link from 'next/link';
-import { Search, Moon, Sun } from 'lucide-react';
+import { Search, Moon, Sun, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/use-auth";
+import LogoutButton from "@/components/logout-button";
 
 export default function Navbar() {
   const { theme, setTheme } = useTheme();
+  const { isAuthenticated, user, isLoading } = useAuth();
 
   return (
     <nav className="bg-background shadow-md">
@@ -29,6 +32,29 @@ export default function Navbar() {
             <Link href="/mcp" className="text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium">
               MCP Server
             </Link>
+            
+            {/* Authentication Section */}
+            {!isLoading && (
+              <>
+                {isAuthenticated && user ? (
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2 text-sm text-foreground">
+                      <User className="h-4 w-4" />
+                      <span className="hidden sm:inline">{user.name || user.email}</span>
+                    </div>
+                    <LogoutButton variant="ghost" size="sm" />
+                  </div>
+                ) : (
+                  <Link 
+                    href="/auth/login" 
+                    className="bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                )}
+              </>
+            )}
+            
             <Button
               variant="ghost"
               size="icon"

@@ -30,11 +30,30 @@ export default function MCPTestPage() {
         }
       }
 
+      // Get session token to authenticate MCP request
+      const sessionResponse = await fetch('/api/auth/session', {
+        method: 'GET',
+        credentials: 'include',
+      })
+      
+      const authHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+      }
+      
+      // If we have a valid session, we can make authenticated requests
+      if (sessionResponse.ok) {
+        const sessionData = await sessionResponse.json()
+        if (sessionData.authenticated) {
+          // For web requests, the session cookie will be sent automatically
+          // The MCP endpoint should check for the session cookie as an alternative to Bearer token
+          console.log('Making authenticated MCP request for user:', sessionData.user.email)
+        }
+      }
+
       const response = await fetch('/api/mcp', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: authHeaders,
+        credentials: 'include', // Include cookies for authentication
         body: JSON.stringify(mcpRequest),
       })
 
