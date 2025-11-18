@@ -5,9 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-interface LoginFormProps extends React.ComponentPropsWithoutRef<'div'> {}
-
-export function LoginForm({ className, ...props }: LoginFormProps) {
+export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = () => {

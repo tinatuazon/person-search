@@ -2,7 +2,7 @@
 'use client'
 
 import Link from 'next/link';
-import { Search, Moon, Sun, User, LogOut, Settings } from 'lucide-react';
+import { Search, Moon, Sun, User, LogOut } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
