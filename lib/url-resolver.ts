@@ -10,6 +10,11 @@ const DEFAULT_LOCAL_HOST = "localhost";
  * Detect current environment and return appropriate base URL
  */
 export function getBaseUrl(): string {
+  // Production URL override (highest priority)
+  if (process.env.PRODUCTION_URL) {
+    return process.env.PRODUCTION_URL.replace(/\/$/, "");
+  }
+
   // Production (Vercel or similar)
   if (process.env.NEXTAUTH_URL) {
     return process.env.NEXTAUTH_URL.replace(/\/$/, "");
@@ -17,6 +22,10 @@ export function getBaseUrl(): string {
 
   // Vercel environment variables
   if (process.env.VERCEL_URL) {
+    // For production deployments, use custom domain if available
+    if (process.env.VERCEL_ENV === "production" && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+      return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+    }
     return `https://${process.env.VERCEL_URL}`;
   }
 
@@ -151,6 +160,8 @@ export function isAllowedRedirectUri(uri: string): boolean {
     // Development URLs
     "http://localhost:3000/api/auth/callback/google",
     "http://127.0.0.1:3000/api/auth/callback/google",
+    // Production domain (hardcoded for security)
+    "https://person-search-pearl.vercel.app/api/auth/callback/google",
   ];
 
   // Production URLs (if configured)
@@ -160,12 +171,28 @@ export function isAllowedRedirectUri(uri: string): boolean {
     );
   }
 
+  // Production URL override
+  if (process.env.PRODUCTION_URL) {
+    allowedRedirects.push(
+      `${process.env.PRODUCTION_URL}/api/auth/callback/google`.replace(/\/$/, "")
+    );
+  }
+
   // Vercel URLs
   if (process.env.VERCEL_URL) {
     allowedRedirects.push(
       `https://${process.env.VERCEL_URL}/api/auth/callback/google`
     );
   }
+
+  console.log("🔍 Redirect URI Validation:", {
+    requestedUri: uri,
+    allowedRedirects,
+    isAllowed: allowedRedirects.some(allowed => 
+      allowed.replace("127.0.0.1", "localhost").replace(/\/$/, "") === 
+      uri.replace("127.0.0.1", "localhost").replace(/\/$/, "")
+    )
+  });
 
   // Normalize URIs for comparison (handle localhost vs 127.0.0.1)
   const normalizedUri = uri.replace("127.0.0.1", "localhost").replace(/\/$/, "");
@@ -250,7 +277,10 @@ export const DevUtils = {
       },
       envVars: {
         NEXTAUTH_URL: process.env.NEXTAUTH_URL || "not set",
+        PRODUCTION_URL: process.env.PRODUCTION_URL || "not set",
         VERCEL_URL: process.env.VERCEL_URL || "not set",
+        VERCEL_ENV: process.env.VERCEL_ENV || "not set",
+        VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL || "not set",
         PORT: process.env.PORT || "not set",
         HOST: process.env.HOST || "not set",
       },
