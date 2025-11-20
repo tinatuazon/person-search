@@ -2,7 +2,7 @@
 'use client'
 
 import Link from 'next/link';
-import { Search, Moon, Sun, User, LogOut } from 'lucide-react';
+import { Search, Moon, Sun, User, LogOut, Github } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/use-auth";
@@ -84,6 +84,28 @@ export default function Navbar() {
                 )}
               </>
             )}
+            <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[44px] hover:bg-muted transition-colors">
+              <Link
+                href="/database"
+                className="w-full flex items-center justify-center"
+                aria-label="Database Page"
+              >
+                {/* Neon logo SVG */}
+                <svg className="h-5 w-5" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="16" cy="16" r="16" fill="#00E599" />
+                  <path d="M10 16c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6zm6-4a4 4 0 100 8 4 4 0 000-8z" fill="#fff" />
+                </svg>
+              </Link>
+            </div>
+            <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[44px] hover:bg-muted transition-colors">
+              <Link
+                href="/github"
+                className="w-full flex items-center justify-center"
+                aria-label="GitHub Page"
+              >
+                <Github className="h-5 w-5 text-foreground" />
+              </Link>
+            </div>
             <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[44px] hover:bg-muted transition-colors">
               <Button
                 variant="ghost"

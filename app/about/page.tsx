@@ -11,16 +11,28 @@ function ProjectOverview() {
       </CardHeader>
       <CardContent>
         <p className="mb-4">
-          Person Search is a demonstration project showcasing the power of Next.js, React, and modern web technologies. 
-          It provides a simple yet effective interface for searching and displaying user information.
+          Person Search is a modern full-stack web application built with Next.js 15 (App Router), React, and TypeScript. The UI leverages the shadcn/ui component library and Tailwind CSS for rapid, accessible design. Authentication is handled via Google OAuth 2.1, with secure session management and protected API routes. Data is managed using Prisma ORM, connecting to a PostgreSQL database. The app is deployed on Vercel for scalable, serverless hosting.
         </p>
         <p className="mb-4">
-          This project utilizes Next.js 15 with the App Router, React 19, TypeScript, and a variety of 
-          cutting-edge libraries to create a responsive and accessible user experience.
+          <strong>Technology Stack:</strong>
+          <ul className="list-disc ml-6">
+            <li>Next.js 15 (App Router)</li>
+            <li>React 18 + TypeScript</li>
+            <li>shadcn/ui & Tailwind CSS</li>
+            <li>Prisma ORM</li>
+            <li>PostgreSQL</li>
+            <li>Google OAuth 2.1</li>
+            <li>Vercel (hosting & serverless functions)</li>
+          </ul>
         </p>
         <p>
-          Key features include asynchronous search functionality, server-side filtering, 
-          and a dark mode toggle for user comfort.
+          <strong>Key Features:</strong>
+          <ul className="list-disc ml-6">
+            <li>Secure Google authentication</li>
+            <li>Person search and management UI</li>
+            <li>Modern, responsive design</li>
+            <li>API endpoints for MCP and people data</li>
+          </ul>
         </p>
       </CardContent>
     </Card>
@@ -49,34 +61,12 @@ function SocialLinks() {
   )
 }
 
-function DeveloperInfo() {
-  return (
-    <Card className="mb-8">
-      <CardHeader>
-        <CardTitle>About the Developer</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="mb-4">
-          Hi, I&apos;m <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">Callum Bir</code>, the developer behind Person Search. I&apos;m passionate about creating 
-          efficient, user-friendly web applications using the latest technologies.
-        </p>
-        <p className="mb-4">
-          This project serves as a demonstration of my skills in Next.js, React, and modern frontend development.
-          I&apos;m always looking to learn and improve, so feel free to reach out with any questions or feedback!
-        </p>
-        <SocialLinks />
-      </CardContent>
-    </Card>
-  )
-}
-
 export default function AboutPage() {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">About Person Search</h1>
         <ProjectOverview />
-        <DeveloperInfo />
         <Button asChild variant="link" className="mt-4">
           <Link href="/">
             Back to Home
