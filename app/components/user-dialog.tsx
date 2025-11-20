@@ -8,11 +8,17 @@ import { UserForm } from './user-form'
 import MutableDialog, { ActionState }  from '@/components/mutable-dialog'
 
 
-export function UserDialog() {
+interface UserDialogProps {
+  onUserAdded?: (user: User) => void;
+}
+
+export function UserDialog({ onUserAdded }: UserDialogProps) {
   const handleAddUser = async (data: UserFormData): Promise<ActionState<User>> => {
     try {
-      const newUser = await addUser(data)
-      return {
+      const newUser = await addUser(data)      // Call the callback to update the parent component
+      if (onUserAdded) {
+        onUserAdded(newUser);
+      }      return {
         success: true,
         message: `User ${newUser.name} added successfully`,
         data: newUser

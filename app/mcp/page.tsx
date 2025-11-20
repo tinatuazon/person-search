@@ -3,6 +3,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,6 +15,8 @@ import { AlertCircle, CheckCircle, Copy, Server } from 'lucide-react'
 import { MCP_TOOLS } from '@/lib/mcp-server'
 
 export default function MCPTestPage() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [response, setResponse] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
@@ -76,6 +79,24 @@ export default function MCPTestPage() {
 
   const serverUrl = typeof window !== 'undefined' ? `${window.location.origin}/api/mcp` : ''
 
+  // Tabs logic
+  const [tab, setTab] = useState<string>(() => {
+    if (pathname === '/mcp-setup') return 'setup';
+    if (pathname === '/mcp-demo') return 'test';
+    return 'test';
+  });
+
+  const handleTabChange = (value: string) => {
+    setTab(value);
+    if (value === 'setup') {
+      router.replace('/mcp-setup');
+    } else if (value === 'test') {
+      router.replace('/mcp-demo');
+    } else {
+      router.replace('/mcp');
+    }
+  };
+
   return (
     <div className="container mx-auto p-6 max-w-6xl">
       <div className="mb-8">
@@ -93,7 +114,7 @@ export default function MCPTestPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="test" className="w-full">
+      <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="test">Test Server</TabsTrigger>
           <TabsTrigger value="tools">Available Tools</TabsTrigger>

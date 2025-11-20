@@ -41,6 +41,11 @@ export default function Navbar() {
                 </Link>
               </div>
             <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
+              <Link href="/directory" className="w-full text-center text-foreground px-3 py-2 rounded-md text-sm font-medium">
+                Directory
+              </Link>
+            </div>
+            <div className="border rounded-lg flex items-center justify-center px-1 py-1 h-9 min-w-[90px] hover:bg-muted transition-colors">
               <Link href="/about" className="w-full text-center text-foreground px-3 py-2 rounded-md text-sm font-medium">
                 About
               </Link>

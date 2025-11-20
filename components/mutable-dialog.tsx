@@ -28,6 +28,7 @@ interface GenericDialogProps<T extends FieldValues> {
   FormComponent: React.ComponentType<{ form: UseFormReturn<T> }>;
   action?: (data: T) => Promise<ActionState<T>>;
   triggerButtonLabel?: string;
+  trigger?: React.ReactNode;
   addDialogTitle?: string;
   editDialogTitle?: string;
   dialogDescription?: string;
@@ -41,6 +42,7 @@ export default function MutableDialog<T extends FieldValues>({
   action, 
   defaultValues,
   triggerButtonLabel = defaultValues ? 'Edit' : 'Add',
+  trigger,
   addDialogTitle = 'Add',
   editDialogTitle = 'Edit',
   dialogDescription = defaultValues ? 'Make changes to your item here. Click save when you\'re done.' : 'Fill out the form below to add a new item.',
@@ -110,7 +112,7 @@ export default function MutableDialog<T extends FieldValues>({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button >{triggerButtonLabel}</Button>
+        {trigger ? trigger : <Button>{triggerButtonLabel}</Button>}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
